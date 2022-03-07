@@ -1,22 +1,24 @@
-import puppeteer from 'puppeteer';
-import axios from 'axios';
+import puppeteer from 'puppeteer'
+import axios from 'axios'
 
 const METAMASK_NEW_PENDING_TRANSACTION_SELECTOR =
-  '.transaction-list__pending-transactions > .transaction-list-item--unconfirmed';
-const METAMASK_CONFIRM_BUTTON_SELECTOR = '.btn-primary';
+  '.transaction-list__pending-transactions > .transaction-list-item--unconfirmed'
+const METAMASK_CONFIRM_BUTTON_SELECTOR = '.btn-primary'
 export class Puppeteer {
   public static connectBrowser = async () => {
-    const { data: debuggerInfo } = await axios.get(`http://localhost:9222/json/version`);
+    const { data: debuggerInfo } = await axios.get(
+      `http://localhost:9222/json/version`
+    )
 
     const browser = await puppeteer.connect({
       browserWSEndpoint: debuggerInfo.webSocketDebuggerUrl,
       ignoreHTTPSErrors: true,
       defaultViewport: null,
-    });
+    })
 
-    Puppeteer.browser = browser;
-    return null;
-  };
+    Puppeteer.browser = browser
+    return null
+  }
 
   public static setPages = async () => {
     if (!Puppeteer.browser)
@@ -25,7 +27,7 @@ export class Puppeteer {
       )
     const pages = await Puppeteer.browser.pages()
     for (const page of pages) {
-      if (page.url().includes('vault')) {
+      if (page.url().includes('dapp1213')) {
         Puppeteer.mainPage = page
       }
       if (page.url().includes('chrome-extension')) {
@@ -37,45 +39,56 @@ export class Puppeteer {
     return null;
   }
 
-  public static loginToMetamask = async ({ password }: { password: string }) => {
-    if (!Puppeteer.metamaskPage) throw new Error('Puppeteer metamask page not set');
-    await Puppeteer.metamaskPage.waitForTimeout(2000);
-    await Puppeteer.gotoMetamaskPage();
+  public static loginToMetamask = async ({
+    password,
+  }: {
+    password: string
+  }) => {
+    if (!Puppeteer.metamaskPage)
+      throw new Error('Puppeteer metamask page not set')
+    await Puppeteer.metamaskPage.waitForTimeout(2000)
+    await Puppeteer.gotoMetamaskPage()
 
-    await Puppeteer.metamaskPage.type('#password', password);
-    await Puppeteer.metamaskPage.click('.button');
+    await Puppeteer.metamaskPage.type('#password', password)
+    await Puppeteer.metamaskPage.click('.button')
 
-    await Puppeteer.gotoMainPage();
-    return null;
-  };
+    await Puppeteer.gotoMainPage()
+    return null
+  }
 
   public static confirm = async () => {
-    if (!Puppeteer.metamaskPage) throw new Error('Puppeteer metamask page not set');
-    await Puppeteer.gotoMetamaskPage();
-    await Puppeteer.metamaskPage.waitForTimeout(4000);
-    await Puppeteer.metamaskPage.waitForSelector(METAMASK_NEW_PENDING_TRANSACTION_SELECTOR);
-    await Puppeteer.metamaskPage.click(METAMASK_NEW_PENDING_TRANSACTION_SELECTOR);
+    if (!Puppeteer.metamaskPage)
+      throw new Error('Puppeteer metamask page not set')
+    await Puppeteer.gotoMetamaskPage()
 
-    await Puppeteer.metamaskPage.waitForSelector(METAMASK_CONFIRM_BUTTON_SELECTOR);
-    await Puppeteer.metamaskPage.waitForTimeout(5000);
-    await Puppeteer.metamaskPage.click(METAMASK_CONFIRM_BUTTON_SELECTOR);
+    await Puppeteer.metamaskPage.waitForSelector(
+      METAMASK_NEW_PENDING_TRANSACTION_SELECTOR
+    )
+    await Puppeteer.metamaskPage.click(
+      METAMASK_NEW_PENDING_TRANSACTION_SELECTOR
+    )
 
-    await Puppeteer.gotoMainPage();
-    return null;
-  };
+    await Puppeteer.metamaskPage.waitForSelector(
+      METAMASK_CONFIRM_BUTTON_SELECTOR
+    )
+    await Puppeteer.metamaskPage.waitForTimeout(2000)
+    await Puppeteer.metamaskPage.click(METAMASK_CONFIRM_BUTTON_SELECTOR)
 
-  private static browser: puppeteer.Browser | undefined;
-  private static metamaskPage: puppeteer.Page | undefined;
-  private static mainPage: puppeteer.Page | undefined;
+    await Puppeteer.gotoMainPage()
+    return null
+  }
+
+  private static browser: puppeteer.Browser | undefined
+  private static metamaskPage: puppeteer.Page | undefined
+  private static mainPage: puppeteer.Page | undefined
 
   private static gotoMetamaskPage = async () => {
-    if (!Puppeteer.metamaskPage) throw new Error('Metamask page not set');
-    await Puppeteer.metamaskPage.bringToFront();
-  };
+    if (!Puppeteer.metamaskPage) throw new Error('Metamask page not set')
+    await Puppeteer.metamaskPage.bringToFront()
+  }
 
   private static gotoMainPage = async () => {
-    if (!Puppeteer.mainPage) throw new Error('Main page not set');
-    await Puppeteer.mainPage.bringToFront();
-  };
-
+    if (!Puppeteer.mainPage) throw new Error('Main page not set')
+    await Puppeteer.mainPage.bringToFront()
+  }
 }

@@ -1,5 +1,5 @@
-/* eslint-disable cypress/no-unnecessary-waiting */
 /// <reference types="cypress" />
+
 // Welcome to Cypress!
 //
 // This spec file contains a variety of sample tests
@@ -10,10 +10,10 @@
 // what makes it such an awesome testing tool,
 // please read our getting started guide:
 // https://on.cypress.io/introduction-to-cypress
-describe('connect to vault', () => {
+describe('connect to undo', () => {
   beforeEach(() => {
-    cy.visit(Cypress.env("vault_url"));
-  });
+    cy.visit(Cypress.env('undo_url'))
+  })
 
   it('open connect modal and run metamask or install metamask', () => {
     cy.task('connectBrowser')
@@ -22,5 +22,5 @@ describe('connect to vault', () => {
     cy.task('loginToMetamask', { password: '12344321' })
     cy.reload()
     cy.viewport('macbook-16')
-  });
-});
+  })
+})
