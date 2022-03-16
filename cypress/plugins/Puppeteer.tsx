@@ -27,7 +27,7 @@ export class Puppeteer {
       )
     const pages = await Puppeteer.browser.pages()
     for (const page of pages) {
-      if (page.url().includes('dapp1213')) {
+      if (page.url().includes('localhost')) {
         Puppeteer.mainPage = page
       }
       if (page.url().includes('chrome-extension')) {

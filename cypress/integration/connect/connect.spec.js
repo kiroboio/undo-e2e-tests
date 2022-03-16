@@ -10,17 +10,23 @@
 // what makes it such an awesome testing tool,
 // please read our getting started guide:
 // https://on.cypress.io/introduction-to-cypress
-describe('connect to undo', () => {
+describe('connect to vault', () => {
   beforeEach(() => {
-    cy.visit(Cypress.env('undo_url'))
-  })
+    try {
+      cy.visit("https://dapp1213.kirobo.me");
+    }catch(e) {
+      console.log(e)
+    }
+  })});
 
-  it('open connect modal and run metamask or install metamask', () => {
+describe('set metamask acc', () => {
+
+  it('set metamsk acc', () => {
     cy.task('connectBrowser')
-    cy.wait(2000)
+    cy.wait(5000)
     cy.task('setPages')
     cy.task('loginToMetamask', { password: '12344321' })
     cy.reload()
     cy.viewport('macbook-16')
-  })
-})
+  });
+});
